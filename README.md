@@ -48,3 +48,19 @@ Start the server
 ```bash
   npm run dev
 ```
+
+## Dockerize the Project
+
+To dockerize the project, follow these steps:
+
+1. Ensure you have Docker and Docker Compose installed on your machine.
+
+2. Copy the provided `.env.local.example` file to `.env.local` and fill in the required environment variables.
+
+3. Build and run the Docker container using Docker Compose:
+
+```bash
+  docker-compose up --build
+```
+
+This will build the Docker image and start the container, mapping the necessary ports and using the environment variables from the `.env.local` file.
