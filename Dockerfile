@@ -1,23 +1,35 @@
-# Use node:16-alpine as the base image
-FROM node:16-alpine
+
+# Use a Debian-based image for better native module compatibility
+FROM node:22-bullseye-slim
 
 # Set the working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json
+# Install build tools needed for bcrypt (and other native modules)
+RUN apt-get update && apt-get install -y python3 g++ make
+
+# Copy ONLY package files first (optimizes Docker layer caching)
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install
+# --force or --build-from-source can help ensure a clean bcrypt build
+RUN npm install --force
+RUN npm uninstall bcrypt
+RUN npm i bcrypt
 
-# Copy the rest of the application files
+
+# Now copy the rest of your code
 COPY . .
 
-# Build the application
-RUN npm run build
+RUN npx prisma db push
+RUN npx prisma generate
 
-# Expose the port the app runs on
-EXPOSE 3000
 
-# Set the command to run the application
-CMD ["npm", "start"]
+# Build the Next.js application
+RUN npx next build
+
+# Expose port 80
+EXPOSE 80
+
+# Run the app on port 80
+CMD ["npx", "next", "start", "-p", "80"]

@@ -1,0 +1,8 @@
+# Ignore node_modules directory
+node_modules
+
+# Optionally, you can ignore other files and directories that are not needed in the Docker image
+.git
+.gitignore
+.idea
+dist
